@@ -7,14 +7,11 @@ import { z } from 'zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
+import { useLoanInput } from '../context/LoanContext'
 
 
 
 const FormFieldSchema = z.object({
-  // loadAmount: z.string().transform((v) => {
-  //   console.log('--v', v)
-  //   return Number(v) || 0
-  // }),
   loadAmount: z.number()
     .min(1, {
       message: "This field has to be filled."
@@ -31,11 +28,11 @@ type LoanInput = z.infer<typeof FormFieldSchema>
 
 const InputForm = () => {
 
+  const { updateLoanInput } = useLoanInput()
+
   const form = useForm<LoanInput>({
     resolver: zodResolver(FormFieldSchema),
     defaultValues: {
-      // loadAmount: undefined,
-      // interestRate: 0,
       year: 0,
       month: 0,
       extraPayment: 0
@@ -56,7 +53,14 @@ const InputForm = () => {
         message: 'Please enter month or year'
       })
     }
-    console.log(values)
+    updateLoanInput({
+      loanAmount: values.loadAmount,
+      interestRate: values.interestRate,
+      year: values.year,
+      month: values.month,
+      extraPayment: values.extraPayment
+    })
+    // console.log(values)
   }
 
 
